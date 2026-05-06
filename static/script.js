@@ -30,15 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentBase64Image = null;
 
-    // Model configuration map
+    // আপনার দেওয়া ছবি অনুযায়ী মডেল কনফিগারেশন আপডেট করা হয়েছে
     const models = {
         'OpenAI': [
             { id: 'gpt-4o', name: 'GPT-4o (Best)' },
             { id: 'gpt-4-turbo', name: 'GPT-4 Turbo Vision' }
         ],
         'Groq': [
-            { id: 'llama-3.2-11b-vision-preview', name: 'LLaMA 3.2 11B Vision' },
-            { id: 'llama-3.2-90b-vision-preview', name: 'LLaMA 3.2 90B Vision' }
+            { id: 'llama-4-maverick-hq', name: 'Llama 4 Maverick HQ' },
+            { id: 'llama-4-scout-fast', name: 'Llama 4 Scout Fast' }
         ],
         'Gemini': [
             { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro' }
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const reader = new FileReader();
         reader.onload = (e) => {
-            currentBase64Image = e.target.result; // This includes 'data:image/jpeg;base64,...'
+            currentBase64Image = e.target.result; 
             imagePreview.src = currentBase64Image;
             imagePreview.classList.remove('hidden');
             uploadPlaceholder.classList.add('hidden');
