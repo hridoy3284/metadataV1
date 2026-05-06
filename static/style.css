@@ -1,36 +1,17 @@
-/* Custom Scrollbar for a premium SaaS feel */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-::-webkit-scrollbar-track {
-    background: #111827; /* Tailwind gray-900 */
-}
-::-webkit-scrollbar-thumb {
-    background: #374151; /* Tailwind gray-700 */
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #4B5563; /* Tailwind gray-600 */
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #030712; }
+::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #4B5563; }
 
-/* Form element fixes */
-select option {
-    background-color: #1f2937; /* Gray-800 */
-    color: white;
-}
+.drag-active { border-color: #6366f1 !important; background-color: rgba(99, 102, 241, 0.05) !important; }
 
-/* Drag and drop active state class */
-.drag-active {
-    border-color: #6366f1 !important; /* Indigo 500 */
-    background-color: rgba(99, 102, 241, 0.1) !important;
+/* Custom Loader Animation */
+.loader {
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top: 3px solid #6366f1;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
 }
-
-/* Toast Notification Animation */
-@keyframes slideUp {
-    from { transform: translateY(100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-.toast-anim {
-    animation: slideUp 0.3s ease forwards;
-}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
