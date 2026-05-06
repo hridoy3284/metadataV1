@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Model AI Image SEO Generator</title>
+    <title>Batch AI Image SEO Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/static/style.css">
     <script src="/static/script.js" defer></script>
@@ -11,139 +11,102 @@
 <body class="bg-gray-950 text-gray-200 font-sans h-screen flex overflow-hidden">
 
     <!-- Sidebar: Settings & BYOK -->
-    <aside class="w-80 bg-gray-900 border-r border-gray-800 flex flex-col p-6 shadow-xl z-10">
-        <div class="mb-8">
+    <aside class="w-80 bg-gray-900 border-r border-gray-800 flex flex-col p-6 shadow-xl z-10 overflow-y-auto">
+        <div class="mb-6">
             <h1 class="text-xl font-bold text-white flex items-center gap-2">
-                <span class="text-indigo-500">⚡</span> StockSEO AI
+                <span class="text-indigo-500">⚡</span> BatchSEO AI
             </h1>
-            <p class="text-xs text-gray-400 mt-1">Multi-Model Metadata Generator</p>
+            <p class="text-[11px] text-gray-400 mt-1">Multi-Image & Multi-Model Metadata</p>
         </div>
 
-        <div class="space-y-5 flex-1">
-            <!-- Provider Selection -->
+        <!-- API Keys Section -->
+        <div class="space-y-4 mb-6 pb-6 border-b border-gray-800">
+            <h3 class="text-sm font-semibold text-white">1. API Keys (Saved Locally)</h3>
+            
             <div>
-                <label class="block text-sm font-medium text-gray-400 mb-1">AI Provider</label>
-                <select id="provider" class="w-full bg-gray-800 border border-gray-700 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
-                    <option value="OpenAI">OpenAI</option>
-                    <option value="Groq">Groq Cloud (Fast)</option>
-                    <option value="Gemini">Google Gemini</option>
-                </select>
+                <label class="block text-xs text-gray-400 mb-1">OpenAI API Key</label>
+                <input type="password" id="keyOpenAI" placeholder="sk-..." class="w-full bg-gray-800 border border-gray-700 rounded-md p-2 text-sm text-white focus:ring-1 focus:ring-indigo-500 outline-none">
+            </div>
+            
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">Groq API Key</label>
+                <input type="password" id="keyGroq" placeholder="gsk_..." class="w-full bg-gray-800 border border-gray-700 rounded-md p-2 text-sm text-white focus:ring-1 focus:ring-indigo-500 outline-none">
             </div>
 
-            <!-- Model Selection -->
-            <div>
-                <label class="block text-sm font-medium text-gray-400 mb-1">Model</label>
-                <select id="model" class="w-full bg-gray-800 border border-gray-700 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
-                    <!-- Populated by JS -->
-                </select>
-            </div>
-
-            <!-- API Key -->
-            <div>
-                <label class="block text-sm font-medium text-gray-400 mb-1">API Key</label>
-                <input type="password" id="apiKey" placeholder="sk-..." class="w-full bg-gray-800 border border-gray-700 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
-                <p class="text-[10px] text-gray-500 mt-2 flex items-center gap-1">
-                    <span>🔒</span> Keys are stored locally in your browser. Never on our servers.
-                </p>
-            </div>
-
-            <button id="saveKeyBtn" class="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-medium py-2 px-4 rounded-md transition duration-200">
-                Save Key Locally
+            <button id="saveKeysBtn" class="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white text-sm py-2 rounded transition">
+                💾 Save Keys
             </button>
+        </div>
+
+        <!-- Model Selection Section -->
+        <div class="space-y-3 flex-1 mb-6 pb-6 border-b border-gray-800">
+            <h3 class="text-sm font-semibold text-white">2. Select Models to Run</h3>
+            
+            <div id="modelCheckboxes" class="space-y-2 text-sm">
+                <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-800 rounded">
+                    <input type="checkbox" value="OpenAI|gpt-4o" class="model-cb rounded text-indigo-500 bg-gray-800 border-gray-700">
+                    <span>GPT-4o <span class="text-[10px] text-gray-500">(OpenAI)</span></span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-800 rounded">
+                    <input type="checkbox" value="Groq|llama-4-maverick-hq" class="model-cb rounded text-indigo-500 bg-gray-800 border-gray-700">
+                    <span>Llama 4 Maverick HQ <span class="text-[10px] text-gray-500">(Groq)</span></span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-800 rounded">
+                    <input type="checkbox" value="Groq|llama-4-scout-fast" class="model-cb rounded text-indigo-500 bg-gray-800 border-gray-700">
+                    <span>Llama 4 Scout Fast <span class="text-[10px] text-gray-500">(Groq)</span></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Global Settings -->
+        <div class="space-y-3">
+            <h3 class="text-sm font-semibold text-white">3. Prompt Settings</h3>
+            <select id="platform" class="w-full bg-gray-800 border border-gray-700 rounded-md p-2 text-sm text-white outline-none">
+                <option value="Adobe Stock">Adobe Stock</option>
+                <option value="Shutterstock">Shutterstock</option>
+                <option value="Freepik">Freepik</option>
+            </select>
+            <textarea id="customPrompt" rows="2" placeholder="Custom instructions..." class="w-full bg-gray-800 border border-gray-700 rounded-md p-2 text-sm text-white outline-none resize-none"></textarea>
+            <div class="flex flex-col gap-2">
+                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="checkTransparent" class="rounded text-indigo-500 bg-gray-800 border-gray-700"><span class="text-xs text-gray-300">Transparent Bg</span></label>
+                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="checkIsolated" class="rounded text-indigo-500 bg-gray-800 border-gray-700"><span class="text-xs text-gray-300">Isolated on White</span></label>
+            </div>
         </div>
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 overflow-y-auto bg-gray-950 p-8 flex flex-col items-center">
-        <div class="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <main class="flex-1 overflow-y-auto bg-gray-950 p-6 flex flex-col">
+        
+        <!-- Top Bar: Upload & Actions -->
+        <div class="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-lg mb-6 sticky top-0 z-20">
+            <div class="flex-1 w-full">
+                <div id="dropZone" class="border-2 border-dashed border-gray-700 hover:border-indigo-500 bg-gray-950 rounded-lg p-4 text-center cursor-pointer transition relative">
+                    <input type="file" id="fileInput" accept="image/png, image/jpeg" multiple class="hidden">
+                    <p class="text-gray-300 text-sm font-medium">📸 Click or Drag multiple images here</p>
+                </div>
+            </div>
             
-            <!-- Left Column: Upload & Config -->
-            <div class="space-y-6">
-                <!-- Upload Zone -->
-                <div id="dropZone" class="border-2 border-dashed border-gray-700 hover:border-indigo-500 bg-gray-900/50 rounded-xl p-8 text-center cursor-pointer transition flex flex-col items-center justify-center min-h-[250px] relative overflow-hidden">
-                    <input type="file" id="fileInput" accept="image/png, image/jpeg" class="hidden">
-                    <div id="uploadPlaceholder">
-                        <span class="text-4xl mb-3 block">📸</span>
-                        <p class="text-gray-300 font-medium">Drag & Drop Image Here</p>
-                        <p class="text-gray-500 text-sm mt-1">Supports JPG, PNG</p>
-                    </div>
-                    <img id="imagePreview" class="hidden absolute inset-0 w-full h-full object-contain bg-gray-900">
-                </div>
-
-                <!-- Settings -->
-                <div class="bg-gray-900 rounded-xl p-6 border border-gray-800 space-y-4 shadow-lg">
-                    <h2 class="text-lg font-semibold text-white mb-4">Generation Settings</h2>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">Platform Preset</label>
-                        <select id="platform" class="w-full bg-gray-800 border border-gray-700 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option value="Adobe Stock">Adobe Stock</option>
-                            <option value="Shutterstock">Shutterstock</option>
-                            <option value="Freepik">Freepik</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">Custom Prompt (Optional)</label>
-                        <textarea id="customPrompt" rows="2" placeholder="E.g., Focus on the business aspect, tone is corporate..." class="w-full bg-gray-800 border border-gray-700 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 outline-none resize-none"></textarea>
-                    </div>
-
-                    <div class="flex gap-4">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="checkTransparent" class="rounded bg-gray-800 border-gray-700 text-indigo-500 focus:ring-indigo-500">
-                            <span class="text-sm text-gray-300">Transparent Bg</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="checkIsolated" class="rounded bg-gray-800 border-gray-700 text-indigo-500 focus:ring-indigo-500">
-                            <span class="text-sm text-gray-300">Isolated on White</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Generate Button -->
-                <button id="generateBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-indigo-500/20 transition duration-200 flex items-center justify-center gap-2">
-                    <span id="btnText">✨ Generate SEO Metadata</span>
-                    <span id="btnLoader" class="hidden">
-                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </span>
+            <div class="flex gap-3 w-full md:w-auto">
+                <button id="clearBtn" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm border border-gray-700 transition">Clear All</button>
+                <button id="generateBatchBtn" class="flex-1 md:flex-none px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-indigo-500/20 transition flex items-center justify-center gap-2">
+                    <span id="btnText">✨ Run Selected Models</span>
                 </button>
             </div>
-
-            <!-- Right Column: Results -->
-            <div class="bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-lg flex flex-col">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-lg font-semibold text-white">Generated Metadata</h2>
-                    <div class="flex gap-2">
-                        <button id="copyAllBtn" class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded border border-gray-700 transition">Copy All</button>
-                        <button id="downloadCsvBtn" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded transition">⬇ CSV</button>
-                    </div>
-                </div>
-
-                <div class="space-y-4 flex-1">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">Generated Title</label>
-                        <input type="text" id="resTitle" readonly class="w-full bg-gray-950 border border-gray-800 rounded-md p-3 text-white outline-none">
-                    </div>
-
-                    <div class="flex-1 flex flex-col">
-                        <label class="block text-sm font-medium text-gray-400 mb-1 flex justify-between">
-                            Keywords <span id="keywordCount" class="text-xs text-indigo-400">0</span>
-                        </label>
-                        <textarea id="resKeywords" readonly class="w-full flex-1 bg-gray-950 border border-gray-800 rounded-md p-3 text-white outline-none resize-none min-h-[120px]"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-1">Description</label>
-                        <textarea id="resDescription" readonly rows="3" class="w-full bg-gray-950 border border-gray-800 rounded-md p-3 text-white outline-none resize-none"></textarea>
-                    </div>
-                </div>
-            </div>
-
         </div>
-    </main>
 
+        <!-- Thumbnails Preview Container -->
+        <div id="thumbnailContainer" class="flex flex-wrap gap-3 mb-6 hidden"></div>
+
+        <!-- Batch Results Container -->
+        <div class="flex justify-between items-center mb-4 hidden" id="resultsHeader">
+            <h2 class="text-lg font-bold text-white">Generated Metadata</h2>
+            <button id="downloadCsvBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded text-sm transition font-medium">⬇ Export All to CSV</button>
+        </div>
+
+        <div id="resultsContainer" class="space-y-6 pb-20">
+            <!-- Results will be injected here dynamically -->
+        </div>
+
+    </main>
 </body>
 </html>
